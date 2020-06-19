@@ -6,6 +6,7 @@ const router = express.Router()
 //GET all accounts
 router.get("/", async (req, res, next) => {
 	try {
+		//defines accounts from the db so we can use it
 		const accounts = await db.select("*").from("accounts")
 		res.json(accounts)
 	} catch (err) {
@@ -16,7 +17,7 @@ router.get("/", async (req, res, next) => {
 //GET account BY id
 router.get("/:id", async (req, res, next) => {
 	try {
-        //SELECTY * FROM messages WHERE ID = :id LIMIT 1
+		//SELECTY * FROM messages WHERE ID = :id LIMIT 1
 		const [account] = await db
 			.select("*")
 			.from("accounts")
