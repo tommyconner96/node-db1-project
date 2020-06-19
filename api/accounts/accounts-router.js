@@ -31,7 +31,7 @@ router.get("/:id", async (req, res, next) => {
 })
 
 //POST account
-router.post("/", async (req, res, next) => {
+router.post("/",validateAcc, async (req, res, next) => {
 	try {
 		const payload = {
 			name: req.body.name,
@@ -47,13 +47,15 @@ router.post("/", async (req, res, next) => {
 })
 
 //PUT (edit) account
-router.put("/:id", async (req, res, next) => {
+router.put("/:id",validateAcc, async (req, res, next) => {
 	try {
 		const payload = {
 			name: req.body.name,
 			budget: req.body.budget,
 		}
-		await db("accounts").update(payload).where("id", req.params.id)
+		if (req.body.name || req.body.budget) {
+			await db("accounts").update(payload).where("id", req.params.id)
+		}
 		const acc = await db.first("*").from("accounts").where("id", req.params.id)
 
 		res.json(acc)
@@ -72,5 +74,19 @@ router.delete("/:id", async (req, res, next) => {
 	}
 })
 
+//middleware
+function validateAcc(req, res, next) {
+	if (Object.keys(req.body).length !== 0) {
+	  (req.body.budget)
+		? next()
+		: res.status(400).json({
+		  error: "missing required budget field"
+		})
+	} else {
+	  res.status(400).json({
+		error: "missing user data"
+	  })
+	}
+  }
 
 module.exports = router
